@@ -22,9 +22,30 @@ router.get('/', (req, res) => {
     .then(projects=>{
       res.status(200).json(projects)
     }).catch(err =>{
-      res.status(500).json({error:err,message:'Unable to get the Projects at this time.'})
+        res.status(500).json({error:err,message:'Unable to get the Projects at this time.'})
     })
   });
+
+  router.get('/:id',(req,res)=>{
+      db('projects')
+      .where({id:req.params.id})
+      .first()
+      .then(project=>{
+          if(project){
+          db('actions')
+          .where({project_id:req.params.id})
+          .then(actionsInProject=>{
+            project.actions=actionsInProject;
+            res.status(200).json(project)
+          })
+        }else{
+            res.status(404).json({message:'The project with the Specified ID does not exist'})
+        }
+      })
+      .catch(err=>{
+          res.status(500).json({error:err,message:'Unable to get the Specified Project at this time.'})
+      })
+  })
 
 
 module.exports=router
