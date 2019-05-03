@@ -5,4 +5,4 @@ const server = express();
 server.use(helmet());
 server.use(express.json());
 
- module.exports = server;
+module.exports = server;
